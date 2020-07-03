@@ -49,7 +49,7 @@ python3.7 test.py --dataroot ./datasets/face --name DeepSIM --label_nc 0 --no_in
 ```
 The test results will be saved to a html file here: `./results/DeepSIM/test_latest/index.html`.
 
-More example scripts can be found in the `scripts` directory.
+More examples can be found in the `scripts` directory.
 
 
 ## Citation
