@@ -57,6 +57,13 @@ More example scripts can be found in the `scripts` directory.
 If you find this useful for your research, please use the following.
 
 ```
+@misc{vinker2020deep,
+    title={Deep Single Image Manipulation},
+    author={Yael Vinker and Eliahu Horwitz and Nir Zabari and Yedid Hoshen},
+    year={2020},
+    eprint={2007.01289},
+    archivePrefix={arXiv},
+}
 ```
 
 
