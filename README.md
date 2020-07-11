@@ -31,7 +31,7 @@ Official PyTorch implementation of the paper: "Deep Single Image Manipulation".
 - Train a model at 640 x 640 resolution (`bash ./scripts/train.sh`):
 ```bash
 #!./scripts/train.sh
-python3.7 train.py --dataroot ./datasets/face --name DeepSIM --niter 8000 --niter_decay 8000 --label_nc 0 --no_instance --resize_or_crop none --tps_aug 1 --apply_binary_threshold 1 --loadSize 640 --fineSize 640
+python3.7 train.py --dataroot ./datasets/face --name DeepSIM --niter 8000 --niter_decay 8000 --label_nc 0 --no_instance --tps_aug 1 --apply_binary_threshold 1
 ```
 - To view training results, please checkout intermediate results in `./checkpoints/DeepSIM/web/index.html`.
 
@@ -45,7 +45,7 @@ python3.7 train.py --dataroot ./datasets/face --name DeepSIM --niter 8000 --nite
 - Test the model (`bash ./scripts/test.sh`):
 ```bash
 #!./scripts/test.sh
-python3.7 test.py --dataroot ./datasets/face --name DeepSIM --label_nc 0 --no_instance --resize_or_crop none --apply_binary_threshold 1 --tps_aug 0 --loadSize 640 --fineSize 640
+python3.7 test.py --dataroot ./datasets/face --name DeepSIM --label_nc 0 --no_instance --apply_binary_threshold 1 --tps_aug 0
 ```
 The test results will be saved to a html file here: `./results/DeepSIM/test_latest/index.html`.
 
