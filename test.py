@@ -11,8 +11,14 @@ import torch
 
 opt = TestOptions().parse(save=False)
 opt.nThreads = 1   # test code only supports nThreads = 1
+opt.batchSize = 1
 opt.serial_batches = True  # no shuffle
 opt.no_flip = True  # no flip
+opt.resize_or_crop = "none"
+
+
+
+
 
 data_loader = CreateDataLoader(opt)
 dataset = data_loader.load_data()
@@ -28,12 +34,12 @@ if not opt.engine and not opt.onnx:
         model.half()
     elif opt.data_type == 8:
         model.type(torch.uint8)
-            
+
     if opt.verbose:
         print(model)
 else:
     from run_engine import run_trt_engine, run_onnx
-    
+
 for i, data in enumerate(dataset):
     if i >= opt.how_many:
         break
@@ -49,18 +55,22 @@ for i, data in enumerate(dataset):
         torch.onnx.export(model, [data['label'], data['inst']],
                           opt.export_onnx, verbose=True)
         exit(0)
-    minibatch = 1 
+    minibatch = 1
     if opt.engine:
         generated = run_trt_engine(opt.engine, minibatch, [data['label'], data['inst']])
     elif opt.onnx:
         generated = run_onnx(opt.onnx, opt.data_type, minibatch, [data['label'], data['inst']])
-    else:        
+    else:
         generated = model.inference(data['label'], data['inst'], data['image'])
-        
+    print(data['label'].shape, data['inst'].shape, data['image'].shape, generated.shape)
     visuals = OrderedDict([('input_label', util.tensor2label(data['label'][0], opt.label_nc)),
                            ('synthesized_image', util.tensor2im(generated.data[0]))])
     img_path = data['path']
+    print(img_path)
     print('process image... %s' % img_path)
     visualizer.save_images(webpage, visuals, img_path)
 
 webpage.save()
+
+if opt.vid_mode:
+    util.frames_to_vid(webpage)

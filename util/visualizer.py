@@ -105,6 +105,7 @@ class Visualizer():
             if v != 0:
                 message += '%s: %.3f ' % (k, v)
 
+
         print(message)
         with open(self.log_name, "a") as log_file:
             log_file.write('%s\n' % message)

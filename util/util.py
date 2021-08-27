@@ -3,7 +3,10 @@ import torch
 import numpy as np
 from PIL import Image
 import numpy as np
-import os
+import os, fnmatch
+import imageio
+import matplotlib.pyplot as plt
+import skimage.transform
 
 # Converts a Tensor into a Numpy array
 # |imtype|: the desired type of the converted numpy array
@@ -98,3 +101,47 @@ class Colorize(object):
             color_image[2][mask] = self.cmap[label][2]
 
         return color_image
+
+
+def crop_im(input_path, output_path):
+    im = imageio.imread(input_path)
+    print(im.shape)
+    im = im[:, 420: 1500, :]
+    im = skimage.transform.resize(im, (640, 640),
+                                          mode='reflect', preserve_range=False,
+                                          anti_aliasing=True, order=1).astype("float32")
+    print(im.shape)
+    plt.imshow(im)
+    imageio.imwrite(output_path, im)
+    plt.show()
+
+
+def frames_to_vid(webpage):
+    input_path = webpage.get_image_dir()
+    output_vid_path = os.path.join(os.path.abspath(os.path.join(input_path, os.pardir)), "vid_res")
+    if not os.path.exists(output_vid_path):
+        os.mkdir(output_vid_path)
+    files_input_label = fnmatch.filter(os.listdir(input_path), '*_input_label.jpg')
+    files_synthesize = fnmatch.filter(os.listdir(input_path), '*_synthesized_image.jpg')
+    len_files = min(len(files_input_label), len(files_synthesize))
+    file_list_input = []
+    file_list_synthesize = []
+    input_name = "%d_input_label.jpg"
+    synthesize_name = "%d_synthesized_image.jpg"
+    for i in range(len_files):
+        cur_input_path = os.path.join(input_path, (input_name % i))
+        cur_synthesize_path = os.path.join(input_path, (synthesize_name % i))
+        if os.path.exists(cur_input_path) and os.path.exists(cur_synthesize_path):
+            file_list_input.append(cur_input_path)
+            file_list_synthesize.append(cur_synthesize_path)
+    #
+    writer = imageio.get_writer(os.path.join(output_vid_path, 'input_vid.mov'), fps=24)
+    for im in file_list_input:
+        writer.append_data(imageio.imread(im))
+    writer.close()
+
+    writer = imageio.get_writer(os.path.join(output_vid_path, 'synthesize_vid.mov'), fps=24)
+    for im in file_list_synthesize:
+        writer.append_data(imageio.imread(im))
+    writer.close()
+    print("vid output saved to [%s]" % output_vid_path)

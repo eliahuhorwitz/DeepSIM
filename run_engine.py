@@ -85,7 +85,7 @@ def create_memory(engine, name,  buf, mem, batchsize, inp, inp_idx):
         raise AttributeError("Not a valid binding")
     print("Binding: name={}, bindingIndex={}".format(name, str(binding_idx)))
     dims = engine.get_binding_dimensions(binding_idx).to_DimsCHW()
-    eltCount = dims.C() * dims.H() * dims.W()
+    eltCount = dims.C() * dims.H() * dims.W() * batchsize
 
     if engine.binding_is_input(binding_idx):
         h_mem = inp[inp_idx]

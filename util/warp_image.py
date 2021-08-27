@@ -13,8 +13,9 @@
 
 from scipy import ndimage
 import numpy
+import time
 
-def warp_images(from_points, to_points, images, output_region, interpolation_order = 1, approximate_grid=2):
+def warp_images(from_points, to_points, images, output_region, interpolation_order = 1, approximate_grid=10):
     """Define a thin-plate-spline warping transform that warps from the from_points
     to the to_points, and then warp the given images by that transform. This
     transform is described in the paper: "Principal Warps: Thin-Plate Splines and
@@ -90,14 +91,16 @@ def _make_L_matrix(points):
     return L
 
 def _calculate_f(coeffs, points, x, y):
+    #a = time.time()
     w = coeffs[:-3]
     a1, ax, ay = coeffs[-3:]
     # The following uses too much RAM:
-    # distances = _U(numpy.sqrt((points[:,0]-x[...,numpy.newaxis])**2 + (points[:,1]-y[...,numpy.newaxis])**2))
-    # summation = (w * distances).sum(axis=-1)
-    summation = numpy.zeros(x.shape)
-    for wi, Pi in zip(w, points):
-        summation += wi * _U(numpy.sqrt((x-Pi[0])**2 + (y-Pi[1])**2))
+    distances = _U(numpy.sqrt((points[:,0]-x[...,numpy.newaxis])**2 + (points[:,1]-y[...,numpy.newaxis])**2))
+    summation = (w * distances).sum(axis=-1)
+#    summation = numpy.zeros(x.shape)
+#    for wi, Pi in zip(w, points):
+#        summation += wi * _U(numpy.sqrt((x-Pi[0])**2 + (y-Pi[1])**2))
+    #print("calc f", time.time()-a)
     return a1 + ax*x + ay*y + summation
 
 def _make_warp(from_points, to_points, x_vals, y_vals):

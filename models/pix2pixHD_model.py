@@ -110,34 +110,51 @@ class Pix2PixHDModel(BaseModel):
 
     def encode_input(self, label_map, inst_map=None, real_image=None, feat_map=None, infer=False):             
         if self.opt.label_nc == 0:
-            input_label = label_map.data.cuda()
+            if self.gpu_ids:
+                input_label = label_map.data.cuda()
+            else:
+                input_label = label_map.data
         else:
             # create one-hot vector for label map 
             size = label_map.size()
             oneHot_size = (size[0], self.opt.label_nc, size[2], size[3])
             input_label = torch.cuda.FloatTensor(torch.Size(oneHot_size)).zero_()
-            input_label = input_label.scatter_(1, label_map.data.long().cuda(), 1.0)
+            input_label = input_label.scatter_(1, label_map.data.long(), 1.0)
+            if self.gpu_ids:
+                input_label = input_label.cuda()
             if self.opt.data_type == 16:
                 input_label = input_label.half()
 
         # get edges from instance map
         if not self.opt.no_instance:
-            inst_map = inst_map.data.cuda()
+            if self.gpu_ids:
+                inst_map = inst_map.data.cuda()
+            else:
+                inst_map = inst_map.data
             edge_map = self.get_edges(inst_map)
             input_label = torch.cat((input_label, edge_map), dim=1)         
         input_label = Variable(input_label, volatile=infer)
 
         # real images for training
         if real_image is not None:
-            real_image = Variable(real_image.data.cuda())
+            if self.gpu_ids:
+                real_image = Variable(real_image.data.cuda())
+            else:
+                real_image = Variable(real_image.data)
 
         # instance map for feature encoding
         if self.use_features:
             # get precomputed feature maps
             if self.opt.load_features:
-                feat_map = Variable(feat_map.data.cuda())
+                if self.gpu_ids:
+                    feat_map = Variable(feat_map.data.cuda())
+                else:
+                    feat_map = Variable(feat_map.data)
             if self.opt.label_feat:
-                inst_map = label_map.cuda()
+                if self.gpu_ids:
+                    inst_map = label_map.cuda()
+                else:
+                    inst_map = label_map
 
         return input_label, inst_map, real_image, feat_map
 
@@ -238,11 +255,17 @@ class Pix2PixHDModel(BaseModel):
         return feat_map
 
     def encode_features(self, image, inst):
-        image = Variable(image.cuda(), volatile=True)
+        if self.gpu_ids:
+            image = Variable(image.cuda(), volatile=True)
+        else:
+            image = Variable(image, volatile=True)
         feat_num = self.opt.feat_num
         h, w = inst.size()[2], inst.size()[3]
         block_num = 32
-        feat_map = self.netE.forward(image, inst.cuda())
+        if self.gpu_ids:
+            feat_map = self.netE.forward(image, inst.cuda())
+        else:
+            feat_map = self.netE.forward(image, inst)
         inst_np = inst.cpu().numpy().astype(int)
         feature = {}
         for i in range(self.opt.label_nc):
