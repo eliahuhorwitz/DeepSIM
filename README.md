@@ -32,8 +32,8 @@ Our method is shown to achieve remarkable performance on image manipulation task
 ### Setup 
 1.  Clone the repo:
 ```bash
-git clone https://github.com/yael-vinker/DeepSIM_aug.git
-cd DeepSIM_aug
+git clone https://github.com/eliahuhorwitz/DeepSIM.git
+cd DeepSIM
 ```
 2. Create a new environment and install the libraries:
 ```bash
