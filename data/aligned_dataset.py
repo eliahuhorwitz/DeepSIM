@@ -26,6 +26,8 @@ class AlignedDataset(BaseDataset):
             # the seg input will be saved as "A"
             self.A = Image.open(self.A_paths[0])
             self.dir_A_edges = os.path.join(opt.dataroot, opt.phase + "_edges")
+            if not os.path.exists(self.dir_A_edges):
+                os.mkdir(self.dir_A_edges)
             self.A_paths_edges = sorted(make_dataset(self.dir_A_edges))
             if not os.path.exists(self.dir_A_edges):
                 os.makedirs(self.dir_A_edges)
