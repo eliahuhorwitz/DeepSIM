@@ -11,7 +11,6 @@ matplotlib==3.4.3
 networkx==2.6.2
 numpy==1.21.2
 Pillow==6.2.2
-pkg-resources==0.0.0
 pyparsing==2.4.7
 python-dateutil==2.8.2
 PyWavelets==1.1.1
