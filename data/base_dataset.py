@@ -28,7 +28,6 @@ def get_params(opt, size, input_im):
     x = random.randint(0, np.maximum(0, new_w - opt.fineSize))
     y = random.randint(0, np.maximum(0, new_h - opt.fineSize))
 
-    # TODO: decide which augmentations are random
     params = {'crop_pos': (x, y), 'crop': random.random() > 0.5, "flip": random.random() > 0.5}
 
     for affine_trans in opt.affine_transforms.keys():
@@ -38,7 +37,6 @@ def get_params(opt, size, input_im):
                                                   opt.affine_transforms[affine_trans][1])
 
     # choose: affine / tps / identity
-    # TODO: decide which probabilities to use
     apply_tps = random.random() < opt.tps_percent
     apply_affine = not apply_tps
     params["apply_affine"] = apply_affine
@@ -70,14 +68,11 @@ def get_transform(opt, params, normalize=True, is_primitive=False, is_edges=Fals
     if opt.isTrain:
         # transforms applied only to the primitive
         if is_primitive:
-            # TODO: differentiate between segmentation and edges when choosing the transform
-            # TODO: add binary operations, random noise
             if opt.canny_aug and is_edges:
                 transform_list.append(
                     transforms.Lambda(lambda img: __add_canny_img(img, params['canny_img'])))
 
         # transforms applied to both the primitive and the real image
-        # TODO: add affine, shear, translation, rotation
         if not opt.no_flip:
             transform_list.append(
                 transforms.Lambda(lambda img: __flip(img, params['flip'])))
