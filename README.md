@@ -1,5 +1,5 @@
 # DeepSIM: Image Shape Manipulation from a Single Augmented Training Sample (ICCV 2021 Oral)
-### [Project](http://www.vision.huji.ac.il/deepsim) | [Paper](https://arxiv.org/abs/2007.01289) <br>
+### [Project](http://www.vision.huji.ac.il/deepsim) | [Paper](https://arxiv.org/abs/2109.06151) <br>
 Official PyTorch implementation of the paper: "DeepSIM: Image Shape Manipulation from a Single Augmented Training Sample".  
 
 
