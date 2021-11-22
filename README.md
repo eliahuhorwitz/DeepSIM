@@ -139,12 +139,13 @@ On the left is the training image pair, in the middle are the manipulated primit
 If you find this useful for your research, please use the following.
 
 ```
-@misc{vinker2020deep,
-    title={Deep Single Image Manipulation},
-    author={Yael Vinker and Eliahu Horwitz and Nir Zabari and Yedid Hoshen},
-    year={2020}, 
-    eprint={2007.01289},
-    archivePrefix={arXiv},
+@InProceedings{Vinker_2021_ICCV,
+    author    = {Vinker, Yael and Horwitz, Eliahu and Zabari, Nir and Hoshen, Yedid},
+    title     = {Image Shape Manipulation From a Single Augmented Training Sample},
+    booktitle = {Proceedings of the IEEE/CVF International Conference on Computer Vision (ICCV)},
+    month     = {October},
+    year      = {2021},
+    pages     = {13769-13778}
 }
 ```
 
